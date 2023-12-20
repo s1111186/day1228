@@ -13,11 +13,11 @@ from bs4 import BeautifulSoup
 @app.route("/")
 def index():
     X+="<a href=books>全部圖書</a><br>"
-    X+="<a href=search>根據書名關鍵字查詢圖書</a><br>"
+    X+="<a href=searchb>根據書名關鍵字查詢圖書</a><br>"
     return X
 
 @app.route("/books")
-def spider():
+def books():
     info = ""
     url = "https://www.xbanxia.com/list/10_1.html"
     Data = requests.get(url)
@@ -28,30 +28,29 @@ def spider():
 
     for x in result:
         info += "<a href=" + x.find("a").get("href") + ">" + x.find("h4").text + "</a><br>"
-        info += x.find("p").text + "<br>"
         info += x.find("a").get("href") + "<br>"
         info +="<img src=https://www.xbanxia.com/" + x.find("img").get("src") + " width=200 height=300></img><br><br>"
     return info
 
-@app.route("/search", methods=["GET", "POST"])
-def search():
+@app.route("/searchQ", methods=["POST","GET"])
+def searchQ():
     if request.method == "POST":
-        keywork = request.form["keywork"]
-        Result = "您輸入的關鍵字是：" + keywork
-        
-        db = firestore.client()
-        collection_ref = db.collection("圖書精選")
-        docs = collection_ref.order_by("anniversary").get()     
+        MovieTitle = request.form["MovieTitle"]
+        info = ""
+        db = firestore.client()     
+        collection_ref = db.collection("小說")
+        docs = collection_ref.order_by("showDate").get()
         for doc in docs:
-            bk = doc.to_dict()
-            if keywork in bk["title"]:         
-                Result += "書名： <a href=" +bk["url"] + ">" + bk["title"] + "</a><br>"
-                Result += "作者：" + bk["author"] + "<br>"
-                Result += str(bk["anniversary"]) + "週年紀念版" + "<br>"
-                Result += "<img src=" + bk["cover"] + "></img><br><br>"    
-        return Result
-    else:
-        return render_template("search.html")
+            if MovieTitle in doc.to_dict()["title"]: 
+                info += "書名：" + doc.to_dict()["title"] + "<br>" 
+                info += "作者：" + doc.to_dict()["author"] + "<br>"
+                info += "類型：" + doc.to_dict()["showLength"] + "<br>" 
+                info += "最近更新：" + doc.to_dict()["showDate"] + "<br>"
+                info += "<img src=" + bk["cover"] + "></img><br><br>"           
+        return info
+    else:  
+        return render_template("sraech.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
