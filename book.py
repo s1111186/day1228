@@ -28,7 +28,6 @@ def searchQ():
                 info += "書名：" + doc.to_dict()["title"] + "<br>" 
                 info += "作者：" + doc.to_dict()["author"] + "<br>"
                 info += "類型：" + doc.to_dict()["showLength"] + "<br>" 
-                info += "最近更新：" + doc.to_dict()["showDate"] + "<br>"
                 info += "<img src=" + bk["cover"] + "></img><br><br>"           
         return info
     else:  
