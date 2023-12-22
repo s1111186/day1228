@@ -27,7 +27,7 @@ def searchQ():
             if NovelTitle in doc.to_dict()["title"]: 
                 info += "書名：" + doc.to_dict()["title"] + "<br>" 
                 info += "作者：" + doc.to_dict()["author"] + "<br>"
-                info += "類型：" + doc.to_dict()["showLength"] + "<br>" 
+                info += "類型：" + doc.to_dict()["type"] + "<br>" 
                 info += "<img src=" + bk["cover"] + "></img><br><br>"           
         return info
     else:  
